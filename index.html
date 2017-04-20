@@ -159,26 +159,26 @@
 		</tr>
 		<tr>
 			<th>
-				<label class="switch" name="Lamp 1">
-					<input type="checkbox" checked>
+				<label class="switch">
+					<input  id="lamp1" type="checkbox" checked onclick="SendControlValue(this)">
 					<div class="slider round"></div>
 				</label>
 			</th>
 			<th>
-				<label class="switch" name="Lamp 2">
-					<input type="checkbox" checked>
+				<label class="switch">
+					<input  id="lamp2" type="checkbox" checked onclick="SendControlValue(this)">
 					<div class="slider round"></div>
 				</label>
 			</th>
 			<th>
-				<label class="switch" name="Lamp 3">
-					<input type="checkbox" checked>
+				<label class="switch">
+					<input  id="lamp3" type="checkbox" checked onclick="SendControlValue(this)">
 					<div class="slider round"></div>
 				</label>
 			</th>
 			<th>
-				<label class="switch" name="Lamp 4">
-					<input type="checkbox" checked>
+				<label class="switch">
+					<input  id="lamp4" type="checkbox" checked onclick="SendControlValue(this)">
 					<div class="slider round"></div>
 				</label>
 			</th>
@@ -229,6 +229,13 @@
           message.destinationName = document.getElementById("topic").value;
           client.send(message);
         });
+		
+		function Publish(msg, topic)
+		{
+			message = new Paho.MQTT.Message(msg);
+			message.destinationName = topic;
+			client.send(message);
+		}
         
         // called when the client connects
         function onConnect() 
@@ -245,6 +252,8 @@
 		  
           client.subscribe("#");
 		  IsConnected = true;
+		  
+		  Publish("gR", 'ControlValue');
         }
         
         // called when the client loses its connection
@@ -259,7 +268,7 @@
 		
 		var Humi = document.getElementById("Humi").innerHTML;
 		var Temp = document.getElementById("Temp").innerHTML;
-        
+		
         // called when a message arrives
         function onMessageArrived(message) 
 		{
@@ -288,13 +297,49 @@
         
 		  //alert(tdMsg.textContent);
 		  
-		  var arr = tdMsg.textContent.split("-");
-		  document.getElementById("Humi").innerHTML = arr[0].substring(1) + " %";
-		  document.getElementById("Temp").innerHTML = (arr[1] + " C").substring(1);
+		  if (tdMsg.textContent.charAt(0) == 'H')
+		  {
+			  var arr = tdMsg.textContent.split("-");
+			  document.getElementById("Humi").innerHTML = arr[0].substring(1) + " %";
+			  document.getElementById("Temp").innerHTML = (arr[1] + " C").substring(1);
+		  }
 		  
-          var tr = document.createElement("tr");
-          tr.appendChild(tdTopic);
-          tr.appendChild(tdMsg);
+		  if (tdMsg.textContent.charAt(4) == 'R')
+		  {
+			for( i = 0; i < 4; i++)
+			{
+				if (tdMsg.textContent.charAt(i) == '1')
+				{
+					document.getElementById("lamp" + (i + 1)).checked = true;
+				}
+				else
+				{
+					document.getElementById("lamp" + (i + 1)).checked = false;
+				}
+			}
+		  }
+          if (tdMsg.textContent.charAt(1) == '_' && message.destinationName != "SmartPhone")
+		  {
+          	var number = Number(tdMsg.textContent.substring(0, 1));
+            
+            if ((number + 1) > 4)
+            	return;
+                
+            var i = number + 1;
+			if (tdMsg.textContent.charAt(2) == '1')
+            {
+              document.getElementById("lamp" + i).checked = true;
+            }
+            else
+            {
+              document.getElementById("lamp" + i).checked = false;
+            }
+			
+		  }
+		  var tr = document.createElement("tr");
+		  tr.appendChild(tdTopic);
+		  tr.appendChild(tdMsg);
+		  
         
           document.getElementById("msgs").appendChild(tr);
         }
@@ -402,6 +447,21 @@
 			else
 			{
 				webSocket.style.display = "none";
+			}
+		}
+		
+		function SendControlValue(element)
+		{
+        	var number = Number(element.id.substring(4)) - 1;
+			if(element.checked == true)
+			{
+                Publish(number + "_1", 'ControlValue');
+                Publish(number + "_1", 'SmartPhone');
+			}
+			else
+			{
+				Publish(number + "_0", 'ControlValue');
+                Publish(number + "_1", 'SmartPhone');
 			}
 		}
         
