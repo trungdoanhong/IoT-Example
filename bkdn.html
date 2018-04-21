@@ -138,7 +138,7 @@
 		<tr>
 			<th  align="center">
 				<label class="switch" name="Auto Enable">
-					<input type="checkbox" checked>
+					<input id="lamp4"type="checkbox" checked>
 					<div class="slider"></div>
 				</label>
 			</th>
@@ -150,10 +150,9 @@
 	<br><br>
 	<table style="width:100%">
 		<tr>
-			<th align="center"> Lamp 1 </th>
-			<th align="center"> Lamp 2 </th>
-			<th align="center"> Lamp 3 </th>
-			<th align="center"> Lamp 4 </th>
+			<th align="center"> LED </th>
+			<th align="center"> PUMP </th>
+			<th align="center"> FAN </th>
 		</tr>
 		<tr>
 			<th>
@@ -171,12 +170,6 @@
 			<th>
 				<label class="switch">
 					<input  id="lamp3" type="checkbox" checked onclick="SendControlValue(this)">
-					<div class="slider round"></div>
-				</label>
-			</th>
-			<th>
-				<label class="switch">
-					<input  id="lamp4" type="checkbox" checked onclick="SendControlValue(this)">
 					<div class="slider round"></div>
 				</label>
 			</th>
