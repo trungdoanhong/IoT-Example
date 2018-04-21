@@ -114,6 +114,7 @@
 	  <br><br>
 	<table style="width:100%">
 		<tr>
+			<th align="center" ><b> Light </b></th>
 			<th align="center" ><b> Temperature </b></th>
 			<th align="center"><b> Humidity </b></th>
 		</tr>
@@ -121,6 +122,7 @@
 			<th><br></th>
 		</tr>				
 		<tr>
+			<th align="center" id="Light">0 S</th>
 			<th align="center" id="Temp">0 C</th>
 			<th align="center" id="Humi">0 %</th>
 		</tr>		
@@ -269,7 +271,7 @@
 		
 		var Humi = document.getElementById("Humi").innerHTML;
 		var Temp = document.getElementById("Temp").innerHTML;
-		
+		var Light = document.getElementById("Light").innerHTML;
         // called when a message arrives
         function onMessageArrived(message) 
 		{
@@ -302,7 +304,8 @@
 		  {
 			  var arr = tdMsg.textContent.split("-");
 			  document.getElementById("Humi").innerHTML = arr[0].substring(1) + " %";
-			  document.getElementById("Temp").innerHTML = (arr[1] + " C").substring(1);
+			  document.getElementById("Temp").innerHTML = arr[1].substring(1) + " C";
+			  document.getElementById("Light").innerHTML = arr[2].substring(1) + " S";
 		  }
 		  
 		  if (tdMsg.textContent.charAt(4) == 'R')
