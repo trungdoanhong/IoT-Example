@@ -175,16 +175,16 @@
 			</th>
 		</tr>
 		<tr>		
-			<th><br><br>Light SP<br> <input id="spLight" type="text" style="text-align:center" value=""></th>
+			<th><br><br>Light SP<br> <input id="spLight" type="text" style="text-align:center" value="20"></th>
 			
-			<th><br><br>Temperature SP<br> <input id="spTemp" type="text" style="text-align:center" value=""></th>
+			<th><br><br>Temperature SP<br> <input id="spTemp" type="text" style="text-align:center" value="40"></th>
 			
-			<th><br><br>Humidity SP<br> <input id="spHumi" type="text" style="text-align:center" value=""></th>
+			<th><br><br>Humidity SP<br> <input id="spHumi" type="text" style="text-align:center" value="60"></th>
 		</tr>
 		
 	</table>  
-	<tr><br><br><th align="center"><button class='btn btn-block'  onclick="UpdateSetpoint()" style="width:150px">Update Setpoints</button></th></tr>
-		
+	<tr><br><br><th><center><button class='btn btn-block'  onclick="UpdateSetpoint()" style="width:150px">Update Setpoints</button></center></th></tr>
+	<tr><br><br><th><center><button class='btn btn-block'  onclick="Refresh()" style="width:150px">Refresh</button></center></th></tr>	
 	<br>
 	<br>
 	<br>
@@ -296,12 +296,12 @@
         
 		  //alert(tdMsg.textContent);
 		  
-		  if (tdMsg.textContent.charAt(0) == 'H')
+		  if (tdMsg.textContent.charAt(0) == 'L')
 		  {
 			  var arr = tdMsg.textContent.split("-");
-			  document.getElementById("Humi").innerHTML = arr[0].substring(1) + " %";
+			  document.getElementById("Light").innerHTML = arr[0].substring(1) + " S";
 			  document.getElementById("Temp").innerHTML = arr[1].substring(1) + " C";
-			  document.getElementById("Light").innerHTML = arr[2].substring(1) + " S";
+			  document.getElementById("Humi").innerHTML = arr[2].substring(1) + " %";
 		  }
 		  
 		  if (tdMsg.textContent.charAt(4) == 'R')
@@ -463,6 +463,20 @@
 				Publish(number + "_0", 'ControlValue');
                 Publish(number + "_0\n", 'SmartPhone');
 			}
+		}
+		
+		function UpdateSetpoint()
+		{
+			var light = document.getElementById("spLight").value;
+			var temp = document.getElementById("spTemp").value;
+			var humi = document.getElementById("spHumi").value;
+			Publish("Sp-L" + light + "-T" + temp + "-H" + humi, 'ControlValue');
+			Publish("Sp-L" + light + "-T" + temp + "-H" + humi + "\n", 'SmartPhone');
+		}
+		
+		function Refresh()
+		{
+			Publish("refresh", 'ControlValue');
 		}
         
       </script>
