@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>IoT-Example</title>
+    <title>Smart Garden</title>
     <link href='//fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
     <link href='https://api.cloudmqtt.com/sso/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
     <script src='https://api.cloudmqtt.com/sso/js/jquery.min.js' type='text/javascript'></script>
@@ -79,11 +79,13 @@
     </style>
   </head>
   <body>
+  
+	<center><img src="bkdn/banner.png" alt="Mountain View" width="1000" ></center>
     
     <div class='container'>
       
       <script src='https://api.cloudmqtt.com/js/mqttws31.js' type='text/javascript'></script>
-      <h2>IoT-Example</h2>
+      <h2>Smart Garden</h2>
       <div class='alert alert-error' id='error' style='display: none'></div>
 	  <div class="alert alert-success" id='success' style='display: none'></div>
 	  <div class="alert alert-info" id='info' style='display: none'></div>
@@ -112,16 +114,19 @@
         </button>
 	  </div>
 	  <br><br>
-	<table style="width:100%">
-		<tr>
+	  <style>
+table.Sensor, tr.sensor {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+</style>
+	<table class="Sensor" style="width:100%">
+		<tr class = "sensor">
 			<th align="center" ><b> Light </b></th>
 			<th align="center" ><b> Temperature </b></th>
 			<th align="center"><b> Humidity </b></th>
-		</tr>
-		<tr>
-			<th><br></th>
 		</tr>				
-		<tr>
+		<tr class = "sensor">
 			<th align="center" id="Light">0 S</th>
 			<th align="center" id="Temp">0 C</th>
 			<th align="center" id="Humi">0 %</th>
@@ -219,6 +224,7 @@
       <style>
         pre { font-size: 11px; }
       </style>
+	  <center><img src="bkdn/rau.jpg" alt="Garden" width="1000" ></center>
       <script>
         var form = document.forms["send"];
         form.addEventListener("submit", function (e) 
@@ -481,5 +487,6 @@
         
       </script>
     </div>
+	
   </body>
 </html>
