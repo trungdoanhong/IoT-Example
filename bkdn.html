@@ -1,13 +1,19 @@
-
-
 <!DOCTYPE html>
-<html>
-  <head>
+<!-- saved from url=(0030)http://iot.imwi.asia/bkdn.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
     <title>Smart Garden</title>
-    <link href='//fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
-    <link href='https://api.cloudmqtt.com/sso/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
-    <script src='https://api.cloudmqtt.com/sso/js/jquery.min.js' type='text/javascript'></script>
-    <script src='https://api.cloudmqtt.com/sso/js/bootstrap.min.js' type='text/javascript'></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+
+    <link href="./Smart Garden_files/css" rel="stylesheet" type="text/css">
+    <link href="./Smart Garden_files/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <script src="./Smart Garden_files/jquery.min.js.tải xuống" type="text/javascript"></script>
+    <script src="./Smart Garden_files/bootstrap.min.js.tải xuống" type="text/javascript"></script>
+
     <style>
       body, input, button, select, textarea {
         font-family: 'Lato', sans-serif;
@@ -15,8 +21,8 @@
       }
       #appharbor li { line-height: inherit; }
       .inline-block { display: inline-block; }
-	  
-	  
+
+
 	  .switch {
 	  position: relative;
 	  display: inline-block;
@@ -72,89 +78,187 @@
 	.slider.round:before {
 	  border-radius: 50%;
 	}
-	
+
 	#content {
 	overflow: scroll;
 	}
+  .banner_cover{
+    display: flex;
+    justify-content: space-around;
+  }
+  table.Sensor, tr.sensor {
+      border: 1px solid black;
+      border-collapse: collapse;
+  }
+  .smartgarden{
+    font-weight: bold;
+    font-size: 40px;
+  }
+  #config{
+    margin: auto;
+    display: block;
+  }
+  #ConfigPanel{
+    padding: 50px;
+    width: 500px;
+    margin: auto;
+  }
+  .info table *{
+    text-align: center;
+  }
+  .info table th{
+		width: 33%;
+  }
+  .control_btn{
+    display: flex;
+    justify-content: space-around;
+    width: 600px;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 50px;
+  }
+  .control_btn button{
+    margin: 0px !important;
+  }
+  .socket{
+    margin-top: 30px;
+    margin-bottom: 100px;
+    padding: 50px;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+  }
+  .socket .item{
+    width: 40%;
+  }
     </style>
   </head>
   <body>
-  
-	<center><img src="bkdn/banner.png" alt="Mountain View" width="1000" ></center>
-    
-    <div class='container'>
-      
-      <script src='https://api.cloudmqtt.com/js/mqttws31.js' type='text/javascript'></script>
-      <h2>Smart Garden</h2>
-      <div class='alert alert-error' id='error' style='display: none'></div>
-	  <div class="alert alert-success" id='success' style='display: none'></div>
-	  <div class="alert alert-info" id='info' style='display: none'></div>
-	  
-	  <button class='btn btn-block' onclick="Config()" style="width:50px">
+
+
+  <br>
+
+
+    <div class="container">
+      <div class="banner_cover">
+        <img src="images/Logo_dhbkdn.jpg" width="150" height="150">
+    		<img src="images/iot-internet-of-things-principles.jpg" border="3" width="800" height="150" align="center" top="0">
+    		<img src="images/hqdefault.jpg" width="150" height="150" align="right">
+      </div>
+
+      <div>
+      <marquee>Đề tài:"Ứng dụng IoT vào hệ thống vườn nhà kính". Sinh viên thực hiện:Nguyễn Phước Huy và Hồ Quốc Việt</marquee>
+  	  </div>
+
+      <center><h1 class="smartgarden">Smart Garden</h1></center>
+
+      <div class="alert alert-error" id="error" style="display: none"></div>
+	    <div class="alert alert-success" id="success" style="display: block;">Connect successfully !</div>
+	    <div class="alert alert-info" id="info" style="display: none;"></div>
+
+	    <button id="config" type="button" class="btn btn-primary" data-toggle="collapse" data-target="#ConfigPanel" >
               Config
       </button>
-	  
+
 	  <br>
-	  
-	  <div id='ConfigPanel' style='display: none'>
-		<table>
-			<tr>
+
+	  <div id="ConfigPanel" class="card collapse">
+      <form action="/action_page.php">
+        <div class="form-group">
+          <label for="host">Host:</label>
+          <input type="text" class="form-control" id="host" placeholder="m12.cloudmqtt.com" name="host">
+        </div>
+        <div class="form-group">
+          <label for="port">Port:</label>
+          <input type="number" class="form-control" id="port" placeholder="37387" name="port">
+        </div>
+        <div class="form-group">
+          <label for="user">Username:</label>
+          <input type="text" class="form-control" id="user" placeholder="Username" name="port">
+        </div>
+        <div class="form-group">
+          <label for="pwd">Password:</label>
+          <input type="password" class="form-control" id="pwd" placeholder="Password" name="port">
+        </div>
+
+        <div class="form-group form-check">
+          <label class="form-check-label">
+            <input class="form-check-input" type="checkbox" name="remember"> Remember
+          </label>
+        </div>
+        <button onclick="ConnectCloudMQTT()" class="btn btn-primary">Connect</button>
+      </form>
+		<!-- <table>
+			<tbody><tr>
 				<th>Host<br> <input id="host" type="text" style="text-align:center" value="m12.cloudmqtt.com"></th>
-				<th>Port<br> <input id="port" type="text" style="text-align:center" value="37387"></th> 
+				<th>Port<br> <input id="port" type="text" style="text-align:center" value="37387"></th>
 			</tr>
 			<tr>
 				<th>UserName<br> <input id="username" type="text" style="text-align:center" value="kkeqionk"></th>
-				<th>Password<br> <input id="password" type="text" style="text-align:center" value="iMTZqUQAqKjb"></th> 
+				<th>Password<br> <input id="password" type="text" style="text-align:center" value="iMTZqUQAqKjb"></th>
 			</tr>
 			<tr>
 			</tr>
-		</table>
-		<button class='btn btn-block' onclick="ConnectCloudMQTT()" style="width:150px">
+		</tbody></table>
+		<button class="btn btn-block" style="width:150px">
               Connect
-        </button>
+        </button> -->
 	  </div>
 	  <br><br>
-	  <style>
-table.Sensor, tr.sensor {
-    border: 1px solid black;
-    border-collapse: collapse;
-}
-</style>
-	<table class="Sensor" style="width:100%">
-		<tr class = "sensor">
-			<th align="center" ><b> Light </b></th>
-			<th align="center" ><b> Temperature </b></th>
-			<th align="center"><b> Humidity </b></th>
-		</tr>				
-		<tr class = "sensor">
+    <div class="info">
+      <table class="table table-dark table-striped">
+        <thead>
+          <tr>
+            <th>Light</th>
+            <th>Temperature</th>
+            <th>Humidity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="Light">0S</td>
+            <td id="Temp">0C</td>
+            <td id="Humi">0%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+	<!-- <center><table class="Sensor" style="width:80%" border="2px" cellpadding="30px" cellspacing="30px" bgcolor="blue">
+		<tbody><tr class="sensor" width="30px">
+			<td align="center"><b> Light </b></td>
+			<td align="center"><b> Temperature </b></td>
+			<td align="center"><b> Humidity </b></td>
+		</tr>
+		<tr class="sensor">
 			<th align="center" id="Light">0 S</th>
 			<th align="center" id="Temp">0 C</th>
 			<th align="center" id="Humi">0 %</th>
-		</tr>		
-	</table>
-	
+		</tr>
+		</tbody></table></center> -->
+
 	<br>
 	<br>
-	
+
 	<table style="width:100%">
-		<tr>
+		<tbody><tr>
 			<th align="center">Auto</th>
-		</tr> 
+		</tr>
 		<tr>
-			<th  align="center">
+			<th align="center">
 				<label class="switch" name="Auto Enable">
-					<input id="lamp4"type="checkbox" checked onclick="SendControlValue(this)">
+					<input id="lamp4" type="checkbox" checked="" onclick="SendControlValue(this)">
 					<div class="slider"></div>
 				</label>
 			</th>
 		</tr>
-		<tr>			
+		<tr>
 		</tr>
-	</table>
-	
+	</tbody></table>
+
 	<br><br>
 	<table style="width:100%">
-		<tr>
+		<tbody><tr>
 			<th align="center"> LED </th>
 			<th align="center"> FAN </th>
 			<th align="center"> PUMP </th>
@@ -162,146 +266,155 @@ table.Sensor, tr.sensor {
 		<tr>
 			<th>
 				<label class="switch">
-					<input  id="lamp1" type="checkbox" checked onclick="SendControlValue(this)">
+					<input id="lamp1" type="checkbox" checked="" onclick="SendControlValue(this)">
 					<div class="slider round"></div>
 				</label>
 			</th>
 			<th>
 				<label class="switch">
-					<input  id="lamp2" type="checkbox" checked onclick="SendControlValue(this)">
+					<input id="lamp2" type="checkbox" checked="" onclick="SendControlValue(this)">
 					<div class="slider round"></div>
 				</label>
 			</th>
 			<th>
 				<label class="switch">
-					<input  id="lamp3" type="checkbox" checked onclick="SendControlValue(this)">
+					<input id="lamp3" type="checkbox" checked="" onclick="SendControlValue(this)">
 					<div class="slider round"></div>
 				</label>
 			</th>
 		</tr>
-		<tr>		
-			<th><br><br>Light SP<br> <input id="spLight" type="text" style="text-align:center" value="20"></th>
-			
-			<th><br><br>Temperature SP<br> <input id="spTemp" type="text" style="text-align:center" value="40"></th>
-			
-			<th><br><br>Humidity SP<br> <input id="spHumi" type="text" style="text-align:center" value="60"></th>
+		<tr>
+			<th style="padding-right:30px"><br><br>Light SP<br> <input id="spLight" type="text" class="form-control" style="text-align:center" value="20"></th>
+
+			<th style="padding-right:30px"><br><br>Temperature SP<br> <input id="spTemp"  type="text" class="form-control"  style="text-align:center" value="40"></th>
+
+			<th style="padding-right:30px"><br><br>Humidity SP<br> <input id="spHumi" type="text" class="form-control"  style="text-align:center" value="60"></th>
 		</tr>
-		
-	</table>  
-	<tr><br><br><th><center><button class='btn btn-block'  onclick="UpdateSetpoint()" style="width:150px">Update Setpoints</button></center></th></tr>
-	<tr><br><br><th><center><button class='btn btn-block'  onclick="Refresh()" style="width:150px">Refresh</button></center></th></tr>	
-	<br>
-	<br>
-	<br>
-	<button class='btn btn-block' onclick="TurnWebSocket()" style="width:100px">WebSocket</button>
-	
-      <div class='row' id="WebSocket" style="display:none">
-        <div class='span3'>
+
+	</tbody></table>
+  <div class="control_btn">
+    <button class="btn btn-info" onclick="UpdateSetpoint()" style="width:150px">Update Setpoints</button>
+    <button class="btn btn-info" onclick="Refresh()" style="width:150px">Refresh</button>
+    <button class="btn btn-info" data-toggle="collapse" data-target="#WebSocket"  style="width:100px">WebSocket</button>
+  </div>
+      <div class="row card socket collapse" id="WebSocket">
+        <div class="item">
           <h3>Send message</h3>
-          <form id='send'>
+          <form action="" id="sent">
+           <div class="form-group">
+             <label for="topic">Topic</label>
+             <input type="text" class="form-control" id="topic" name="topic">
+           </div>
+           <div class="form-group">
+             <label for="message">Message:</label>
+             <textarea class="form-control" rows="5" id="message"></textarea>
+           </div>
+           <button type="submit" class="btn btn-primary">Send</button>
+          </form>
+          <!-- <form id="send">
             <label>Topic</label>
-            <input id='topic' name='topic'>
+            <input id="topic" name="topic">
             <label>Message</label>
-            <textarea id='message' name='message'></textarea>
-            <button class='btn btn-block'>
+            <textarea id="message" name="message"></textarea>
+            <button class="btn btn-block">
               Send
             </button>
-          </form>
+          </form> -->
         </div>
-        <div class='span9'>
+        <div class="item">
           <h3>Received messages</h3>
-          <table class='table'>
+          <table class="table">
             <thead>
               <tr>
                 <th>Topic</th>
                 <th>Message</th>
               </tr>
             </thead>
-            <tbody id='msgs'></tbody>
+            <tbody id="msgs"><tr><td>SensorValue</td><td>the payload</td></tr><tr><td>ControlValue</td><td>gR</td></tr></tbody>
           </table>
         </div>
       </div>
       <style>
         pre { font-size: 11px; }
       </style>
-	  <center><img src="bkdn/rau.jpg" alt="Garden" width="1000" ></center>
+	  <center><img src="./Smart Garden_files/rau.jpg" alt="Garden" width="1100" height="200"></center>
       <script>
         var form = document.forms["send"];
-        form.addEventListener("submit", function (e) 
+        form.addEventListener("submit", function (e)
 		{
           e.preventDefault();
           message = new Paho.MQTT.Message(document.getElementById("message").value);
           message.destinationName = document.getElementById("topic").value;
           client.send(message);
         });
-		
+
 		function Publish(msg, topic)
 		{
 			message = new Paho.MQTT.Message(msg);
 			message.destinationName = topic;
 			client.send(message);
 		}
-        
+
         // called when the client connects
-        function onConnect() 
+        function onConnect()
 		{
           // Once a connection has been made, make a subscription and send a message.
           console.log("onConnect");
-		  
+
 		  infDiv.textContent = "";
 		  infDiv.style.display= "none";
           errDiv.textContent = "";
 		  errDiv.style.display = "none";
 		  sucDiv.textContent = "Connect successfully !";
 		  sucDiv.style.display = "block";
-		  
+
           client.subscribe("#");
 		  IsConnected = true;
-		  
+
 		  Publish("gR", 'ControlValue');
         }
-        
+
         // called when the client loses its connection
-        function onConnectionLost(responseObject) 
+        function onConnectionLost(responseObject)
 		{
-          if (responseObject.errorCode !== 0) 
+          if (responseObject.errorCode !== 0)
 		  {
             console.log("onConnectionLost:", responseObject.errorMessage);
             setTimeout(function() { client.connect() }, 5000);
           }
         }
-		
+
 		var Humi = document.getElementById("Humi").innerHTML;
 		var Temp = document.getElementById("Temp").innerHTML;
 		var Light = document.getElementById("Light").innerHTML;
         // called when a message arrives
-        function onMessageArrived(message) 
+        function onMessageArrived(message)
 		{
           var tdTopic = document.createElement("td");
           tdTopic.textContent = message.destinationName;
-        
+
           var tdMsg = document.createElement("td");
-          try 
+          try
 		  {
             tdMsg.textContent = message.payloadString;
-			
-          } 
-		  catch (e) 
+
+          }
+		  catch (e)
 		  {
             //tdMsg.textContent = "*** Binary data ***";
             var pre = document.createElement("pre");
             var base64 = btoa(String.fromCharCode.apply(null, message.payloadBytes));
-            pre.textContent = base64.replace(/(.{72})/g, "$1\n");		
-			
-			
+            pre.textContent = base64.replace(/(.{72})/g, "$1\n");
+
+
             var note = document.createElement("em");
             note.textContent = "Binary data (base64 encoded)"
             tdMsg.appendChild(note);
             tdMsg.appendChild(pre)
           }
-        
+
 		  //alert(tdMsg.textContent);
-		  
+
 		  if (tdMsg.textContent.charAt(0) == 'L')
 		  {
 			  var arr = tdMsg.textContent.split("-");
@@ -309,7 +422,7 @@ table.Sensor, tr.sensor {
 			  document.getElementById("Temp").innerHTML = arr[1].substring(1) + " C";
 			  document.getElementById("Humi").innerHTML = arr[2].substring(1) + " %";
 		  }
-		  
+
 		  if (tdMsg.textContent.charAt(4) == 'R')
 		  {
 			for( i = 0; i < 4; i++)
@@ -327,10 +440,10 @@ table.Sensor, tr.sensor {
           if (tdMsg.textContent.charAt(1) == '_' && message.destinationName != "SmartPhone")
 		  {
           	var number = Number(tdMsg.textContent.substring(0, 1));
-            
+
             if ((number + 1) > 4)
             	return;
-                
+
             var i = number + 1;
 			if (tdMsg.textContent.charAt(2) == '1')
             {
@@ -340,17 +453,17 @@ table.Sensor, tr.sensor {
             {
               document.getElementById("lamp" + i).checked = false;
             }
-			
+
 		  }
 		  var tr = document.createElement("tr");
 		  tr.appendChild(tdTopic);
 		  tr.appendChild(tdMsg);
-		  
-        
+
+
           document.getElementById("msgs").appendChild(tr);
         }
-        
-        function onFailure(invocationContext, errorCode, errorMessage) 
+
+        function onFailure(invocationContext, errorCode, errorMessage)
 		{
 		  infDiv.textContent = "";
 		  infDiv.style.display = "none";
@@ -358,35 +471,35 @@ table.Sensor, tr.sensor {
           errDiv.style.display = "block";
 		  sucDiv.textContent = "";
 		  sucDiv.style.display = "none";
-		  
+
 		  IsConnected = false;
         }
-		
+
 		var infDiv = document.getElementById("info");
 		var errDiv = document.getElementById("error");
 		var sucDiv = document.getElementById("success");
-		
+
 		var configPanel = document.getElementById("ConfigPanel");
 		var webSocket = document.getElementById("WebSocket");
-		  
+
 		infDiv.textContent = "Connecting ...";
 		infDiv.style.display = "block";
-		
+
 		var IsConnected = false;
-		
+
 		var Host = "m12.cloudmqtt.com";
 		var Port = 37387;
 		var UserName = "wind2115";
 		var Password = "841566";
-		
+
 		var clientId = "ws" + Math.random();
 		// Create a client instance
 		var client = new Paho.MQTT.Client(Host, Port, clientId);
-		
+
 		// set callback handlers
 		client.onConnectionLost = onConnectionLost;
 		client.onMessageArrived = onMessageArrived;
-		
+
 		// connect the client
 		client.connect(
 		{
@@ -396,25 +509,25 @@ table.Sensor, tr.sensor {
 		  onSuccess: onConnect,
 		  onFailure: onFailure
 		});
-		
+
 		function ConnectCloudMQTT()
 		{
 			if (IsConnected == true)
 				client.disconnect();
-		
+
 			Host = document.getElementById("host").value;
 			Port = document.getElementById("port").value;
 			UserName = document.getElementById("username").value;
 			Password = document.getElementById("password").value;
-			
+
 			clientId = "ws" + Math.random();
 			// Create a client instance
 			client = new Paho.MQTT.Client(Host, parseInt(Port), clientId);
-			
+
 			// set callback handlers
 			client.onConnectionLost = onConnectionLost;
 			client.onMessageArrived = onMessageArrived;
-			
+
 			// connect the client
 			client.connect({
 			  useSSL: true,
@@ -423,17 +536,17 @@ table.Sensor, tr.sensor {
 			  onSuccess: onConnect,
 			  onFailure: onFailure
 			});
-			
+
 			infDiv.textContent = "Connecting ...";
 			infDiv.style.display = "block";
 			sucDiv.textContent = "";
 			sucDiv.style.display = "none";
 			errDiv.textContent = "";
 			errDiv.style.display = "none";
-		}        
-		
+		}
+
 		function Config()
-		{		
+		{
 			if (configPanel.style.display == "none")
 			{
 				configPanel.style.display = "block";
@@ -443,7 +556,7 @@ table.Sensor, tr.sensor {
 				configPanel.style.display = "none";
 			}
 		}
-		
+
 		function TurnWebSocket()
 		{
 			if (webSocket.style.display == "none")
@@ -455,7 +568,7 @@ table.Sensor, tr.sensor {
 				webSocket.style.display = "none";
 			}
 		}
-		
+
 		function SendControlValue(element)
 		{
         	var number = Number(element.id.substring(4)) - 1;
@@ -470,7 +583,7 @@ table.Sensor, tr.sensor {
                 Publish(number + "_0\n", 'SmartPhone');
 			}
 		}
-		
+
 		function UpdateSetpoint()
 		{
 			var light = document.getElementById("spLight").value;
@@ -479,14 +592,15 @@ table.Sensor, tr.sensor {
 			Publish("Sp-L" + light + "-T" + temp + "-H" + humi, 'ControlValue');
 			Publish("Sp-L" + light + "-T" + temp + "-H" + humi + "\n", 'SmartPhone');
 		}
-		
+
 		function Refresh()
 		{
 			Publish("refresh", 'ControlValue');
 		}
-        
+
       </script>
     </div>
-	
-  </body>
-</html>
+
+
+
+</body></html>
