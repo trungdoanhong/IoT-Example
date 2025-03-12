@@ -1,225 +1,532 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="vi">
   <head>
-    <title>IoT-Example</title>
-    <link href='//fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home IoT Dashboard</title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap' rel='stylesheet' type='text/css'>
     <link href='https://api.cloudmqtt.com/sso/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src='https://api.cloudmqtt.com/sso/js/jquery.min.js' type='text/javascript'></script>
     <script src='https://api.cloudmqtt.com/sso/js/bootstrap.min.js' type='text/javascript'></script>
+    <script src='https://api.cloudmqtt.com/js/mqttws31.js' type='text/javascript'></script>
     <style>
-      body, input, button, select, textarea {
-        font-family: 'Lato', sans-serif;
-        font-size: .8em;
+      :root {
+        --primary-color: #4285F4;
+        --secondary-color: #34A853;
+        --warning-color: #FBBC05;
+        --danger-color: #EA4335;
+        --light-color: #F8F9FA;
+        --dark-color: #202124;
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition-speed: 0.3s;
       }
-      #appharbor li { line-height: inherit; }
-      .inline-block { display: inline-block; }
-	  
-	  
-	  .switch {
-	  position: relative;
-	  display: inline-block;
-	  width: 60px;
-	  height: 34px;
-		}
+      
+      body {
+        font-family: 'Roboto', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f5f7fa;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .container {
+        max-width: 1200px;
+        padding: 20px;
+      }
+      
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e1e4e8;
+      }
+      
+      .dashboard-title {
+        font-size: 28px;
+        font-weight: 500;
+        color: var(--dark-color);
+        margin: 0;
+      }
+      
+      .config-btn {
+        background-color: var(--light-color);
+        color: var(--dark-color);
+        border: none;
+        border-radius: 4px;
+        padding: 8px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all var(--transition-speed);
+        display: flex;
+        align-items: center;
+      }
+      
+      .config-btn:hover {
+        background-color: #e2e6ea;
+      }
+      
+      .config-btn i {
+        margin-right: 8px;
+      }
+      
+      .alert {
+        border-radius: 8px;
+        padding: 12px 20px;
+        margin-bottom: 20px;
+        border: none;
+        font-weight: 500;
+      }
+      
+      .alert-error {
+        background-color: rgba(234, 67, 53, 0.1);
+        color: var(--danger-color);
+      }
+      
+      .alert-success {
+        background-color: rgba(52, 168, 83, 0.1);
+        color: var(--secondary-color);
+      }
+      
+      .alert-info {
+        background-color: rgba(66, 133, 244, 0.1);
+        color: var(--primary-color);
+      }
+      
+      .card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        padding: 20px;
+        margin-bottom: 25px;
+        transition: transform var(--transition-speed);
+      }
+      
+      .card:hover {
+        transform: translateY(-5px);
+      }
+      
+      .card-header {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 15px;
+        color: var(--dark-color);
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+      }
+      
+      .config-panel {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        padding: 20px;
+        margin-bottom: 25px;
+      }
+      
+      .form-group {
+        margin-bottom: 15px;
+      }
+      
+      .form-control {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color var(--transition-speed);
+      }
+      
+      .form-control:focus {
+        border-color: var(--primary-color);
+        outline: none;
+      }
+      
+      .btn {
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all var(--transition-speed);
+        border: none;
+      }
+      
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+      }
+      
+      .btn-primary:hover {
+        background-color: #3367d6;
+      }
+      
+      .btn-danger {
+        background-color: var(--danger-color);
+        color: white;
+      }
+      
+      .btn-danger:hover {
+        background-color: #d93025;
+      }
+      
+      .btn-secondary {
+        background-color: #757575;
+        color: white;
+      }
+      
+      .btn-secondary:hover {
+        background-color: #616161;
+      }
+      
+      .sensor-value {
+        font-size: 36px;
+        font-weight: 300;
+        text-align: center;
+        margin: 10px 0;
+      }
+      
+      .sensor-label {
+        font-size: 14px;
+        color: #757575;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      
+      .sensor-icon {
+        font-size: 24px;
+        margin-right: 10px;
+        color: var(--primary-color);
+      }
+      
+      .sensor-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+      
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+        margin: 10px 0;
+      }
 
-	.switch input {display:none;}
+      .switch input {
+        display: none;
+      }
 
-	.slider {
-	  position: absolute;
-	  cursor: pointer;
-	  top: 0;
-	  left: 0;
-	  right: 0;
-	  bottom: 0;
-	  background-color: #ccc;
-	  -webkit-transition: .4s;
-	  transition: .4s;
-	}
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+      }
 
-	.slider:before {
-	  position: absolute;
-	  content: "";
-	  height: 26px;
-	  width: 26px;
-	  left: 4px;
-	  bottom: 4px;
-	  background-color: white;
-	  -webkit-transition: .4s;
-	  transition: .4s;
-	}
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+      }
 
-	input:checked + .slider {
-	  background-color: #2196F3;
-	}
+      input:checked + .slider {
+        background-color: var(--primary-color);
+      }
 
-	input:focus + .slider {
-	  box-shadow: 0 0 1px #2196F3;
-	}
+      input:focus + .slider {
+        box-shadow: 0 0 1px var(--primary-color);
+      }
 
-	input:checked + .slider:before {
-	  -webkit-transform: translateX(26px);
-	  -ms-transform: translateX(26px);
-	  transform: translateX(26px);
-	}
+      input:checked + .slider:before {
+        transform: translateX(26px);
+      }
 
-	/* Rounded sliders */
-	.slider.round {
-	  border-radius: 34px;
-	}
+      .slider.round {
+        border-radius: 34px;
+      }
 
-	.slider.round:before {
-	  border-radius: 50%;
-	}
-	
-	#content {
-	overflow: scroll;
-	}
+      .slider.round:before {
+        border-radius: 50%;
+      }
+      
+      .device-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+      }
+      
+      .device-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+      
+      .device-name {
+        margin: 10px 0;
+        font-weight: 500;
+      }
+      
+      .device-icon {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+      
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -10px;
+      }
+      
+      .col-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+        padding: 0 10px;
+      }
+      
+      .col-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        padding: 0 10px;
+      }
+      
+      .websocket-section {
+        margin-top: 30px;
+      }
+      
+      .websocket-toggle {
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 20px;
+        background-color: var(--light-color);
+        color: var(--dark-color);
+        border: none;
+        border-radius: 4px;
+        padding: 8px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all var(--transition-speed);
+      }
+      
+      .websocket-toggle:hover {
+        background-color: #e2e6ea;
+      }
+      
+      .websocket-toggle i {
+        margin-right: 8px;
+      }
+      
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      
+      .table th, .table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+      
+      .table th {
+        font-weight: 500;
+        color: #757575;
+      }
+      
+      @media (max-width: 768px) {
+        .col-6 {
+          flex: 0 0 100%;
+          max-width: 100%;
+        }
+        
+        .device-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .device-grid {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
   </head>
   <body>
-    
     <div class='container'>
-      
-      <script src='https://api.cloudmqtt.com/js/mqttws31.js' type='text/javascript'></script>
-      <h2>IoT-Example</h2>
-      <div class='alert alert-error' id='error' style='display: none'></div>
-	  <div class="alert alert-success" id='success' style='display: none'></div>
-	  <div class="alert alert-info" id='info' style='display: none'></div>
-	  
-	  <button class='btn btn-block' onclick="Config()" style="width:50px">
-              Config
-      </button>
-	  
-	  <br>
-	  
-	  <div id='ConfigPanel' style='display: none'>
-		<table>
-			<tr>
-				<th>Host<br> <input id="host" type="text" style="text-align:center" value="m12.cloudmqtt.com"></th>
-				<th>Port<br> <input id="port" type="text" style="text-align:center" value="37387"></th> 
-			</tr>
-			<tr>
-				<th>UserName<br> <input id="username" type="text" style="text-align:center" value="kkeqionk"></th>
-				<th>Password<br> <input id="password" type="text" style="text-align:center" value="iMTZqUQAqKjb"></th> 
-			</tr>
-			<tr>
-			</tr>
-		</table>
-		<button class='btn btn-block' onclick="ConnectCloudMQTT()" style="width:150px">
-              Connect
+      <div class="dashboard-header">
+        <h1 class="dashboard-title">Smart Home Dashboard</h1>
+        <button class='config-btn' onclick="Config()">
+          <i class="fas fa-cog"></i> Cấu hình
         </button>
-	  </div>
-	  <br><br>
-	<table style="width:100%">
-		<tr>
-			<th align="center" ><b> Temperature </b></th>
-			<th align="center"><b> Humidity </b></th>
-		</tr>
-		<tr>
-			<th><br></th>
-		</tr>				
-		<tr>
-			<th align="center" id="Temp">0 C</th>
-			<th align="center" id="Humi">0 %</th>
-		</tr>		
-	</table>
-	
-	<br>
-	<br>
-	
-	<table style="width:100%">
-		<tr>
-			<th align="center">Alarm</th>
-		</tr> 
-		<tr>
-			<th  align="center">
-				<label class="switch" name="Alarm Enable">
-					<input type="checkbox" checked>
-					<div class="slider"></div>
-				</label>
-			</th>
-		</tr>
-		<tr>
-			<th align="center">
-				<button class='btn btn-block' onclick="TurnOffAlarm()" style="width:50px">
-					Off
-				</button>
-			</th>
-		</tr>
-	</table>
-	
-	<br><br>
-	<table style="width:100%">
-		<tr>
-			<th align="center"> Lamp 1 </th>
-			<th align="center"> Lamp 2 </th>
-			<th align="center"> Lamp 3 </th>
-			<th align="center"> Lamp 4 </th>
-		</tr>
-		<tr>
-			<th>
-				<label class="switch">
-					<input  id="lamp1" type="checkbox" checked onclick="SendControlValue(this)">
-					<div class="slider round"></div>
-				</label>
-			</th>
-			<th>
-				<label class="switch">
-					<input  id="lamp2" type="checkbox" checked onclick="SendControlValue(this)">
-					<div class="slider round"></div>
-				</label>
-			</th>
-			<th>
-				<label class="switch">
-					<input  id="lamp3" type="checkbox" checked onclick="SendControlValue(this)">
-					<div class="slider round"></div>
-				</label>
-			</th>
-			<th>
-				<label class="switch">
-					<input  id="lamp4" type="checkbox" checked onclick="SendControlValue(this)">
-					<div class="slider round"></div>
-				</label>
-			</th>
-		</tr>
-		
-	</table>  
-	
-	<br>
-	<br>
-	<br>
-	<button class='btn btn-block' onclick="TurnWebSocket()" style="width:100px">WebSocket</button>
-	
-      <div class='row' id="WebSocket" style="display:none">
-        <div class='span3'>
-          <h3>Send message</h3>
-          <form id='send'>
-            <label>Topic</label>
-            <input id='topic' name='topic'>
-            <label>Message</label>
-            <textarea id='message' name='message'></textarea>
-            <button class='btn btn-block'>
-              Send
-            </button>
-          </form>
+      </div>
+      
+      <div class='alert alert-error' id='error' style='display: none'></div>
+      <div class="alert alert-success" id='success' style='display: none'></div>
+      <div class="alert alert-info" id='info' style='display: none'></div>
+      
+      <div id='ConfigPanel' class="config-panel" style='display: none'>
+        <div class="card-header">Cấu hình kết nối MQTT</div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <label for="host">Host</label>
+              <input id="host" type="text" class="form-control" value="m12.cloudmqtt.com">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label for="port">Port</label>
+              <input id="port" type="text" class="form-control" value="37387">
+            </div>
+          </div>
         </div>
-        <div class='span9'>
-          <h3>Received messages</h3>
-          <table class='table'>
-            <thead>
-              <tr>
-                <th>Topic</th>
-                <th>Message</th>
-              </tr>
-            </thead>
-            <tbody id='msgs'></tbody>
-          </table>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group">
+              <label for="username">Tên đăng nhập</label>
+              <input id="username" type="text" class="form-control" value="kkeqionk">
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group">
+              <label for="password">Mật khẩu</label>
+              <input id="password" type="password" class="form-control" value="iMTZqUQAqKjb">
+            </div>
+          </div>
+        </div>
+        <button class='btn btn-primary' onclick="ConnectCloudMQTT()">
+          <i class="fas fa-plug"></i> Kết nối
+        </button>
+      </div>
+      
+      <div class="row">
+        <div class="col-6">
+          <div class="card sensor-card">
+            <div class="sensor-icon"><i class="fas fa-thermometer-half"></i></div>
+            <div class="sensor-label">Nhiệt độ</div>
+            <div class="sensor-value" id="Temp">0 °C</div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="card sensor-card">
+            <div class="sensor-icon"><i class="fas fa-tint"></i></div>
+            <div class="sensor-label">Độ ẩm</div>
+            <div class="sensor-value" id="Humi">0 %</div>
+          </div>
         </div>
       </div>
-      <style>
-        pre { font-size: 11px; }
-      </style>
+      
+      <div class="card">
+        <div class="card-header">Báo động</div>
+        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 15px;">
+          <label class="switch" name="Alarm Enable">
+            <input type="checkbox" checked>
+            <div class="slider round"></div>
+          </label>
+          <div style="margin-top: 15px;">
+            <button class='btn btn-danger' onclick="TurnOffAlarm()">
+              <i class="fas fa-bell-slash"></i> Tắt báo động
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">Điều khiển đèn</div>
+        <div class="device-grid">
+          <div class="device-card">
+            <div class="device-icon"><i class="fas fa-lightbulb"></i></div>
+            <div class="device-name">Đèn 1</div>
+            <label class="switch">
+              <input id="lamp1" type="checkbox" checked onclick="SendControlValue(this)">
+              <div class="slider round"></div>
+            </label>
+          </div>
+          <div class="device-card">
+            <div class="device-icon"><i class="fas fa-lightbulb"></i></div>
+            <div class="device-name">Đèn 2</div>
+            <label class="switch">
+              <input id="lamp2" type="checkbox" checked onclick="SendControlValue(this)">
+              <div class="slider round"></div>
+            </label>
+          </div>
+          <div class="device-card">
+            <div class="device-icon"><i class="fas fa-lightbulb"></i></div>
+            <div class="device-name">Đèn 3</div>
+            <label class="switch">
+              <input id="lamp3" type="checkbox" checked onclick="SendControlValue(this)">
+              <div class="slider round"></div>
+            </label>
+          </div>
+          <div class="device-card">
+            <div class="device-icon"><i class="fas fa-lightbulb"></i></div>
+            <div class="device-name">Đèn 4</div>
+            <label class="switch">
+              <input id="lamp4" type="checkbox" checked onclick="SendControlValue(this)">
+              <div class="slider round"></div>
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="websocket-section">
+        <button class='websocket-toggle' onclick="TurnWebSocket()">
+          <i class="fas fa-exchange-alt"></i> WebSocket
+        </button>
+        
+        <div class='row' id="WebSocket" style="display:none">
+          <div class='col-12'>
+            <div class="card">
+              <div class="card-header">Gửi tin nhắn</div>
+              <form id='send'>
+                <div class="form-group">
+                  <label for="topic">Chủ đề</label>
+                  <input id='topic' name='topic' class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="message">Tin nhắn</label>
+                  <textarea id='message' name='message' class="form-control" rows="3"></textarea>
+                </div>
+                <button class='btn btn-primary'>
+                  <i class="fas fa-paper-plane"></i> Gửi
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class='col-12'>
+            <div class="card">
+              <div class="card-header">Tin nhắn đã nhận</div>
+              <div style="max-height: 300px; overflow-y: auto;">
+                <table class='table'>
+                  <thead>
+                    <tr>
+                      <th>Chủ đề</th>
+                      <th>Tin nhắn</th>
+                    </tr>
+                  </thead>
+                  <tbody id='msgs'></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <script>
         var form = document.forms["send"];
         form.addEventListener("submit", function (e) 
@@ -247,7 +554,7 @@
 		  infDiv.style.display= "none";
           errDiv.textContent = "";
 		  errDiv.style.display = "none";
-		  sucDiv.textContent = "Connect successfully !";
+		  sucDiv.textContent = "Kết nối thành công!";
 		  sucDiv.style.display = "block";
 		  
           client.subscribe("#");
@@ -301,7 +608,7 @@
 		  {
 			  var arr = tdMsg.textContent.split("-");
 			  document.getElementById("Humi").innerHTML = arr[0].substring(1) + " %";
-			  document.getElementById("Temp").innerHTML = (arr[1] + " C").substring(1);
+			  document.getElementById("Temp").innerHTML = (arr[1] + " °C").substring(1);
 		  }
 		  
 		  if (tdMsg.textContent.charAt(4) == 'R')
@@ -348,7 +655,7 @@
 		{
 		  infDiv.textContent = "";
 		  infDiv.style.display = "none";
-          errDiv.textContent = "Connect failed !";
+          errDiv.textContent = "Kết nối thất bại!";
           errDiv.style.display = "block";
 		  sucDiv.textContent = "";
 		  sucDiv.style.display = "none";
@@ -363,7 +670,7 @@
 		var configPanel = document.getElementById("ConfigPanel");
 		var webSocket = document.getElementById("WebSocket");
 		  
-		infDiv.textContent = "Connecting ...";
+		infDiv.textContent = "Đang kết nối...";
 		infDiv.style.display = "block";
 		
 		var IsConnected = false;
@@ -418,7 +725,7 @@
 			  onFailure: onFailure
 			});
 			
-			infDiv.textContent = "Connecting ...";
+			infDiv.textContent = "Đang kết nối...";
 			infDiv.style.display = "block";
 			sucDiv.textContent = "";
 			sucDiv.style.display = "none";
@@ -465,6 +772,10 @@
 			}
 		}
         
+        function TurnOffAlarm() {
+            // Add alarm functionality here
+            alert("Báo động đã tắt!");
+        }
       </script>
     </div>
   </body>
